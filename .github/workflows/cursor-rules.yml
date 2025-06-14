@@ -2,9 +2,9 @@ name: Cursor Rules Automation
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
     - cron: '* * * * *'  # Run every minute
 
@@ -13,24 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
-      - name: Run cursor rules check
-        run: |
-          npx @cursor/cli rules check
-          
-      - name: Update cursor rules
-        run: |
-          npx @cursor/cli rules update
-          
+
       - name: Commit changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .cursor/rules.json
           git commit -m "chore: update cursor rules [skip ci]" || exit 0
-          git push 
+          git push
