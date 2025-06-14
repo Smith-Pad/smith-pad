@@ -23,20 +23,42 @@ jobs:
       - name: Clone and sync repositories
         run: |
           # Create a directory for cloned repositories
-          mkdir -p cloned-repos
+          mkdir -p sub-repos
           
-          # Clone repositories (add your repository URLs here)
-          # Example:
-          # git clone https://github.com/username/repo1.git cloned-repos/repo1
-          # git clone https://github.com/username/repo2.git cloned-repos/repo2
+          # Function to clone or update a repository
+          clone_or_update_repo() {
+            local repo_url=$1
+            local repo_name=$(basename "$repo_url" .git)
+            local repo_path="sub-repos/$repo_name"
+            
+            if [ -d "$repo_path" ]; then
+              echo "Updating existing repository: $repo_name"
+              cd "$repo_path"
+              git fetch --all
+              git reset --hard origin/main
+              cd ../..
+            else
+              echo "Cloning new repository: $repo_name"
+              git clone "$repo_url" "$repo_path"
+            fi
+          }
           
-          # Set up MCP
-          # Add MCP setup commands here
+          # Clone or update each repository
+          # Add your repository URLs here
+          clone_or_update_repo "https://github.com/smith-pad/osui.git"
+          clone_or_update_repo "https://github.com/smith-pad/subjects.git"
+          clone_or_update_repo "https://codeberg.org/smith-pad/smith-pad-os"
+          
+          # Add any additional repositories you want to sync
           
           # Commit and push changes
-          git add .
-          git commit -m "Sync repositories and MCP updates [skip ci]" || echo "No changes to commit"
-          git push
+          git add sub-repos/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Sync sub-repositories [skip ci]"
+            git push
+          fi
 
       - name: Handle MCP Integration
         run: |
