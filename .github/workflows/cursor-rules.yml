@@ -19,17 +19,13 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Install dependencies
-        run: |
-          npm install -g @cursor/cli
-          
       - name: Run cursor rules check
         run: |
-          cursor rules check
+          npx @cursor/cli rules check
           
       - name: Update cursor rules
         run: |
-          cursor rules update
+          npx @cursor/cli rules update
           
       - name: Commit changes
         run: |
