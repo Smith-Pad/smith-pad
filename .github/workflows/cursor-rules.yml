@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '* * * * *'  # Run every minute
+    - cron: '0 */6 * * *'  # Run every 6 hours
 
 jobs:
   update-cursor-rules:
