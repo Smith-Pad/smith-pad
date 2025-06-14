@@ -1,0 +1,21 @@
+name: Smith-Pad-OS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm nodejs npm git archiso make meson ninja
+          git clone https://codeberg.org/smith-pad-os/smith-pad-os.git
