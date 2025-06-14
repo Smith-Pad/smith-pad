@@ -1,0 +1,43 @@
+{
+        "version": 1,
+        "rules": [
+                {
+                        "name": "Code Style",
+                        "description": "Enforce consistent code style",
+                        "patterns": [
+                                {
+                                        "pattern": "\\s+$",
+                                        "message": "Remove trailing whitespace",
+                                        "severity": "warning"
+                                },
+                                {
+                                        "pattern": "\t",
+                                        "message": "Use spaces instead of tabs",
+                                        "severity": "warning"
+                                }
+                        ]
+                },
+                {
+                        "name": "Documentation",
+                        "description": "Ensure proper documentation",
+                        "patterns": [
+                                {
+                                        "pattern": "TODO:",
+                                        "message": "Add a ticket number to TODO comments",
+                                        "severity": "info"
+                                }
+                        ]
+                },
+                {
+                        "name": "Security",
+                        "description": "Security best practices",
+                        "patterns": [
+                                {
+                                        "pattern": "password|secret|key|token",
+                                        "message": "Check for hardcoded credentials",
+                                        "severity": "error"
+                                }
+                        ]
+                }
+        ]
+}
