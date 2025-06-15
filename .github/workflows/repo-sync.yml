@@ -7,7 +7,9 @@ on:
 
 jobs:
   sync-repositories:
+    name: Sync Sub-Repositories
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout smith-pad
         uses: actions/checkout@v3
@@ -27,15 +29,15 @@ jobs:
         run: |
           # Create a directory for cloned repositories
           mkdir -p sub-repos
-          
+
           # Function to clone or update a repository
           clone_or_update_repo() {
             local repo_url=$1
             local repo_name=$(basename "$repo_url" .git)
             local repo_path="sub-repos/$repo_name"
-            
+
             echo "Processing repository: $repo_name"
-            
+
             if [ -d "$repo_path" ]; then
               echo "Updating existing repository: $repo_name"
               cd "$repo_path"
@@ -46,28 +48,50 @@ jobs:
               echo "Cloning new repository: $repo_name"
               git clone "$repo_url" "$repo_path"
             fi
-            
+
             # Verify the repository was cloned/updated successfully
             if [ ! -d "$repo_path/.git" ]; then
               echo "Error: Failed to clone/update $repo_name"
               exit 1
             fi
           }
-          
+
           # Clone or update each repository
           echo "Starting repository sync process..."
-          
+
           # GitHub repositories
           clone_or_update_repo "https://github.com/smith-pad/osui.git"
           clone_or_update_repo "https://github.com/smith-pad/subjects.git"
-          
+
           # Codeberg repository
           clone_or_update_repo "https://codeberg.org/smith-pad/smith-pad-os"
-          
+
           echo "Repository sync completed successfully"
-          
+
+          # Create a .gitmodules file if it doesn't exist
+          if [ ! -f .gitmodules ]; then
+            echo "Creating .gitmodules file"
+            cat > .gitmodules << EOL
+          [submodule "sub-repos/osui"]
+              path = sub-repos/osui
+              url = https://github.com/smith-pad/osui.git
+          [submodule "sub-repos/subjects"]
+              path = sub-repos/subjects
+              url = https://github.com/smith-pad/subjects.git
+          [submodule "sub-repos/smith-pad-os"]
+              path = sub-repos/smith-pad-os
+              url = https://codeberg.org/smith-pad/smith-pad-os
+          EOL
+          fi
+
+          # Initialize and update submodules
+          git submodule init
+          git submodule update
+
+          # Add all changes
+          git add .gitmodules sub-repos/
+
           # Commit and push changes
-          git add sub-repos/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
@@ -81,4 +105,4 @@ jobs:
           # This could include:
           # - Setting up MCP environment
           # - Running MCP commands
-          # - Processing MCP output 
+          # - Processing MCP output
