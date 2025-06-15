@@ -19,6 +19,9 @@ jobs:
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
+          # Configure Git to handle different authentication methods
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.CODEBERG_TOKEN }}@codeberg.org/".insteadOf "https://codeberg.org/"
 
       - name: Clone and sync repositories
         run: |
@@ -31,25 +34,37 @@ jobs:
             local repo_name=$(basename "$repo_url" .git)
             local repo_path="sub-repos/$repo_name"
             
+            echo "Processing repository: $repo_name"
+            
             if [ -d "$repo_path" ]; then
               echo "Updating existing repository: $repo_name"
               cd "$repo_path"
               git fetch --all
-              git reset --hard origin/main
+              git reset --hard origin/main || git reset --hard origin/master
               cd ../..
             else
               echo "Cloning new repository: $repo_name"
               git clone "$repo_url" "$repo_path"
             fi
+            
+            # Verify the repository was cloned/updated successfully
+            if [ ! -d "$repo_path/.git" ]; then
+              echo "Error: Failed to clone/update $repo_name"
+              exit 1
+            fi
           }
           
           # Clone or update each repository
-          # Add your repository URLs here
+          echo "Starting repository sync process..."
+          
+          # GitHub repositories
           clone_or_update_repo "https://github.com/smith-pad/osui.git"
           clone_or_update_repo "https://github.com/smith-pad/subjects.git"
+          
+          # Codeberg repository
           clone_or_update_repo "https://codeberg.org/smith-pad/smith-pad-os"
           
-          # Add any additional repositories you want to sync
+          echo "Repository sync completed successfully"
           
           # Commit and push changes
           git add sub-repos/
