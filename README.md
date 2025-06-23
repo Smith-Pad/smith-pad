@@ -19,7 +19,7 @@ git clone --recurse-submodules https://github.com/smith-pad/smith-pad
 
 
 
-## Cursor Rules
+## Cursor Rules (Currently in Maintain Mode)
 
 This repository uses automated cursor rules to maintain code quality and consistency. The rules are defined in `.cursor/rules.json` and are automatically updated through GitHub Actions.
 
