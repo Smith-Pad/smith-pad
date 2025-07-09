@@ -1,3 +1,6 @@
 [submodule "osui"]
 	path = osui
 	url = https://github.com/smith-pad/osui
+[submodule "smith-pad-os"]
+	path = smith-pad-os
+	url = https://codeberg.org/smith-pad/smith-pad-os
