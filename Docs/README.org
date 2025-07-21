@@ -1,0 +1,3 @@
+#+TITLE: Docs
+
+Welcome to the documentation. This documentation shows you how this reposttory works.
