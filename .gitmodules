@@ -4,3 +4,6 @@
 [submodule "smith-pad-os"]
 	path = smith-pad-os
 	url = https://codeberg.org/smith-pad/smith-pad-os
+[submodule "buildroot"]
+	path = buildroot
+	url = https://github.com/Smith-Pad/buildroot/
